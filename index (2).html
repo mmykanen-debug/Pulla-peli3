@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pulla Klikkeri — markkinapäivitys</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#f7f6f2;color:#111;text-align:center;padding:18px}
+    h1{font-size:28px;margin:6px}
+    .big-btn{width:220px;height:220px;border-radius:50%;font-size:64px;border:none;background:linear-gradient(#ffd27a,#ffb347);box-shadow:0 6px 18px rgba(0,0,0,0.15);cursor:pointer}
+    .card{background:#fff;padding:12px;border-radius:10px;box-shadow:0 6px 14px rgba(0,0,0,0.06);display:inline-block;vertical-align:top;margin:8px}
+    table{border-collapse:collapse;margin:auto}
+    th,td{padding:6px 10px;border-bottom:1px solid #eee}
+    button.small{padding:6px 8px;border-radius:6px;border:1px solid #ddd;background:#fafafa;cursor:pointer}
+    input[type=text]{padding:6px;border-radius:6px;border:1px solid #ccc}
+    select{padding:6px;border-radius:6px;border:1px solid #ccc}
+    .tiny{font-size:12px;color:#555}
+    canvas{background:#fff;border-radius:6px}
+    .positive{color:green}
+    .negative{color:red}
+    .top-right{position:absolute;top:12px;right:12px;text-align:right}
+  </style>
+</head>
+<body>
+  <h1>Pulla Klikkeri</h1>
+  <div class="top-right">
+    <button id="prestigeBtn" class="small">🔁 Aloita alusta</button><br>
+    <label class="tiny">Kaupan aikaväli:</label>
+    <select id="tradeIntervalSelect">
+      <option value="1000">1 sekunti</option>
+      <option value="60000">60 sekuntia</option>
+    </select>
+    <div id="prestigeMsg" class="tiny"></div>
+  </div>
+  <p class="tiny">Tiedostonimi: <b>index.html</b></p>
+
+  <script>
+  let count = 0;
+  let multiplier = 1;
+  const prestigeThreshold = 1_000_000_000_000_000_000_000;
+  const countEl = document.getElementById('count');
+  const prodEl = document.getElementById('prod');
+  const clickBtn = document.getElementById('clickBtn');
+  const prestigeBtn = document.getElementById('prestigeBtn');
+  const prestigeMsg = document.getElementById('prestigeMsg');
+  const tradeIntervalSelect = document.getElementById('tradeIntervalSelect');
+
+  let tradeInterval = 1000;
+  let tradeTimer;
+
+  clickBtn?.addEventListener('click', () => {
+    count += multiplier;
+    updateUI();
+  });
+
+  prestigeBtn?.addEventListener('click', () => {
+    if (count >= prestigeThreshold) {
+      multiplier *= 2;
+      count = 0;
+      prestigeMsg.textContent = `Uusi kierros aloitettu! Kerroin nyt ${multiplier}x.`;
+      updateUI();
+    } else {
+      prestigeMsg.textContent = 'Tarvitset enemmän pullia aloittaaksesi alusta!';
+    }
+  });
+
+  function updateUI(){
+    if (countEl) countEl.textContent = Math.floor(count).toLocaleString();
+    if (prodEl) prodEl.textContent = '0.0'; // Placeholder
+  }
+
+  setInterval(() => {
+    updateUI();
+  }, 1000);
+
+  function startTradeInterval() {
+    if (tradeTimer) clearInterval(tradeTimer);
+    tradeTimer = setInterval(() => {
+      // Simuloitu automaattinen kauppa
+      count += 10; // Placeholder: lisätään 10 pullaa
+      updateUI();
+    }, tradeInterval);
+  }
+
+  tradeIntervalSelect?.addEventListener('change', () => {
+    tradeInterval = parseInt(tradeIntervalSelect.value);
+    startTradeInterval();
+  });
+
+  startTradeInterval();
+  </script>
+</body>
+</html>
